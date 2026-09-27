@@ -1,0 +1,5 @@
+title: $:/plugins/nikorion/detect-language/language/en-GB/history
+type: text/vnd.tiddlywiki
+
+* ''0.1.0'' -- 2026.09.25 -- Hello! Browser-language detection (JS `startup` module, run before core's `startup`) and the `detect-language-lingo` helper, shared by nikorion's dev and demo wikis.
+* ''0.1.0'' -- 2026.09.28 -- Readme, history and licence translated (en-GB, fr-FR), following the wiki language.

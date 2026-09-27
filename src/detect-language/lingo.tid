@@ -1,0 +1,15 @@
+title: $:/plugins/nikorion/detect-language/lingo
+tags: $:/tags/Global
+
+\procedure detect-language-lingo(title, mode:"inline")
+\whitespace trim
+<$let _lang={{{ [[$:/language]get[text]get[name]else[en-GB]] }}}>
+<$transclude $tiddler={{{ [[$:/nikorion/language/]addsuffix<_lang>addsuffix[/]addsuffix<title>] }}} $mode=<<mode>>>
+<$transclude $tiddler={{{ [[$:/nikorion/language/en-GB/]addsuffix<title>] }}} $mode=<<mode>>/>
+</$transclude>
+</$let>
+\end
+
+\function detect-language-lingo-text(title)
+[[$:/language]get[text]get[name]else[en-GB]addprefix[$:/nikorion/language/]addsuffix[/]addsuffix<title>get[text]] :else[[$:/nikorion/language/en-GB/]addsuffix<title>get[text]] :else[<title>]
+\end

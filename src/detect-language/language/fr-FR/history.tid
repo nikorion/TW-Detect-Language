@@ -1,0 +1,5 @@
+title: $:/plugins/nikorion/detect-language/language/fr-FR/history
+type: text/vnd.tiddlywiki
+
+* ''0.1.0'' -- 2026.09.25 -- Bonjour ! Détection de la langue du navigateur (module JS `startup`, exécuté avant le `startup` du core) et utilitaire `detect-language-lingo`, partagés par les wikis de dev et de démo de nikorion.
+* ''0.1.0'' -- 2026.09.28 -- Readme, historique et licence traduits (en-GB, fr-FR), selon la langue du wiki.

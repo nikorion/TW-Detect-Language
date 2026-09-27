@@ -1,0 +1,11 @@
+{
+  "title": "$:/plugins/nikorion/detect-language",
+  "name": "Detect Language",
+  "description": "Browser-language auto-detection and dev-wiki i18n helper, shared by nikorion's dev and demo wikis",
+  "list": "readme license history",
+  "author": "nikorion",
+  "version": "0.1.0",
+  "core-version": ">=5.3.5",
+  "type": "application/json",
+  "plugin-type": "plugin"
+}

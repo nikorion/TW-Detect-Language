@@ -1,0 +1,36 @@
+title: $:/plugins/nikorion/detect-language/language/en-GB/readme
+type: text/vnd.tiddlywiki
+
+Shared browser-language detection and a small i18n helper for nikorion's own dev and demo wikis. Not a feature plugin for end users — it exists purely so every nikorion wiki (dev and published demo alike) behaves the same way around language, without copy-pasting the same tiddlers into every repo.
+
+! What it does
+
+* A JS `startup` module (`modules/startup.js`) reads `navigator.language` and sets `$:/language` to the best match among the language plugins actually installed in the current wiki (exact tag, then primary subtag, then `en-GB`) — //before// core's own `startup` module runs (`"before": ["startup"]`), not as a `$:/tags/StartupAction/Browser` wikitext action. That ordering matters: core's `startup` module builds `$tw.languageSwitcher` (which decides which language plugin's shadow tiddlers — button captions, menu labels, the whole core UI — are actually active) reading `$:/language` once, then immediately calls `$tw.wiki.clearTiddlerEventQueue()` to skip a redundant startup refresh. A wikitext `StartupAction/Browser` runs //after// `$tw.languageSwitcher` already made that one read, and the change event it fires afterwards for `$:/language` gets silently discarded by that same queue-clear — `$:/language`'s own value ends up correct, but the core UI stays on whatever `$tw.languageSwitcher` picked at construction (English by default) for the rest of the session. Running before `startup` avoids the race entirely: `$:/language` is already right by the time `$tw.languageSwitcher` is built.
+* `$:/plugins/nikorion/detect-language/lingo` defines a procedure `detect-language-lingo(title)` and a function `detect-language-lingo-text(title)`, used to translate tiddler content that lives in a wiki's own `wiki/tiddlers/` (not shipped inside any plugin) — typically a `Playground` demo tiddler. Unlike the core UI, this reads `$:/language`'s live value directly at render time, so it was never affected by the race above.
+
+! Using it in a wiki
+
+# Make sure the plugin's symlink exists in `TIDDLYWIKI_PLUGIN_PATH` — `<TIDDLYWIKI_PLUGIN_PATH>/nikorion/detect-language` pointing at this repo's `src/detect-language`. This is what actually resolves the plugin; a `"pluginPath"` entry in `tiddlywiki.info` does //not// do this (not read by TiddlyWiki's plugin loader).
+# Add `"nikorion/detect-language"` to the `"plugins"` array of the wiki's `tiddlywiki.info`.
+# Add every language you want detected to `"languages"` (e.g. `["fr-FR"]`) — each one must itself resolve as a TiddlyWiki language plugin.
+# Add `-[[$:/language]]` to `$:/config/SyncFilter`, so the detected value stays in memory and is never written back to disk as a real tiddler.
+# Leave the plugin out of any `publishFilter` exclusion list — the same detection should run in the published demo, not just the dev wiki.
+
+! Translating a wiki's own content
+
+Detection and language //switching// are wiki-wide (they set `$:/language`), but the actual translated strings for a wiki's own tiddlers — a `Playground`, a demo readme — are **not** part of this plugin: they live in that wiki's own `wiki/tiddlers/language/<lang>/*.multids`, one `.multids` file per content domain (e.g. `playground.multids`), each titled `$:/nikorion/language/<lang>/<Domain>/` with `Key: value` lines.
+
+```
+title: $:/nikorion/language/en-GB/Playground/
+
+Intro: Some introductory sentence.
+Heading: ! A heading
+```
+
+Reference a key from wikitext with `<<detect-language-lingo "Playground/Intro">>` — it resolves against `$:/nikorion/language/<lang>/Playground/Intro` for the current `$:/language`, falling back to the `en-GB` value.
+
+Because these `.multids`-derived tiddlers are titled `$:/…`, the consuming wiki's filesystem adapter will flatten them into individual files under `wiki/tiddlers/system/` the moment its dev server runs — unless `$:/config/SyncFilter` also excludes `-[prefix[$:/nikorion/language/]]`. Add that exclusion alongside the `$:/language` one above.
+
+! Not included
+
+No settings tab, no UI strings of its own (only its readme, history and licence are translated), no dev wiki in this repo (deliberately minimal — it only makes sense loaded from another wiki, not run standalone).

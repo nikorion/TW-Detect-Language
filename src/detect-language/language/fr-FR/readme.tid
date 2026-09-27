@@ -1,0 +1,36 @@
+title: $:/plugins/nikorion/detect-language/language/fr-FR/readme
+type: text/vnd.tiddlywiki
+
+Détection partagée de la langue du navigateur et petit utilitaire d'i18n pour les wikis de dev et de démo de nikorion. Ce n'est pas un plugin fonctionnel destiné aux utilisateurs : il existe uniquement pour que tous les wikis nikorion (de dev comme de démo publiée) se comportent de la même façon vis-à-vis de la langue, sans recopier les mêmes tiddlers dans chaque dépôt.
+
+! Ce qu'il fait
+
+* Un module JS `startup` (`modules/startup.js`) lit `navigator.language` et règle `$:/language` sur la meilleure correspondance parmi les plugins de langue réellement installés dans le wiki (étiquette exacte, puis sous-étiquette principale, puis `en-GB`) — //avant// le module `startup` du core (`"before": ["startup"]`), et non via une action wikitext `$:/tags/StartupAction/Browser`. Cet ordre compte : le module `startup` du core construit `$tw.languageSwitcher` (qui décide quels shadows de plugin de langue — libellés des boutons, des menus, toute l'UI du core — sont effectivement actifs) en lisant `$:/language` une seule fois, puis appelle aussitôt `$tw.wiki.clearTiddlerEventQueue()` pour éviter un rafraîchissement inutile au démarrage. Une action wikitext `StartupAction/Browser` s'exécute //après// cette unique lecture, et l'évènement de changement qu'elle émet ensuite pour `$:/language` est silencieusement jeté par ce même vidage de file : `$:/language` finit avec la bonne valeur, mais l'UI du core reste, pour toute la session, sur le choix fait par `$tw.languageSwitcher` à sa construction (l'anglais par défaut). S'exécuter avant `startup` supprime la course : `$:/language` est déjà juste quand `$tw.languageSwitcher` est construit.
+* `$:/plugins/nikorion/detect-language/lingo` définit une procédure `detect-language-lingo(title)` et une fonction `detect-language-lingo-text(title)`, qui servent à traduire le contenu d'un wiki qui vit dans son propre `wiki/tiddlers/` (livré par aucun plugin) — typiquement un tiddler de démo `Playground`. Contrairement à l'UI du core, elles lisent la valeur courante de `$:/language` à chaque rendu : la course ci-dessus ne les a jamais concernées.
+
+! L'utiliser dans un wiki
+
+# Vérifier que le lien symbolique du plugin existe dans `TIDDLYWIKI_PLUGIN_PATH` — `<TIDDLYWIKI_PLUGIN_PATH>/nikorion/detect-language` pointant vers le `src/detect-language` de ce dépôt. C'est lui qui résout réellement le plugin ; une entrée `"pluginPath"` dans `tiddlywiki.info` ne le fait //pas// (le chargeur de plugins de TiddlyWiki ne la lit pas).
+# Ajouter `"nikorion/detect-language"` au tableau `"plugins"` du `tiddlywiki.info` du wiki.
+# Ajouter chaque langue à détecter dans `"languages"` (ex. `["fr-FR"]`) — chacune doit elle-même se résoudre en plugin de langue TiddlyWiki.
+# Ajouter `-[[$:/language]]` à `$:/config/SyncFilter`, pour que la valeur détectée reste en mémoire et ne soit jamais réécrite sur disque comme vrai tiddler.
+# Ne pas exclure le plugin d'un `publishFilter` — la même détection doit tourner dans la démo publiée, pas seulement dans le wiki de dev.
+
+! Traduire le contenu propre d'un wiki
+
+La détection et le //changement// de langue valent pour tout le wiki (ils règlent `$:/language`), mais les chaînes traduites du contenu propre d'un wiki — un `Playground`, un readme de démo — ne font **pas** partie de ce plugin : elles vivent dans le `wiki/tiddlers/language/<lang>/*.multids` de ce wiki, un fichier `.multids` par domaine de contenu (ex. `playground.multids`), chacun titré `$:/nikorion/language/<lang>/<Domaine>/` avec des lignes `Clé: valeur`.
+
+```
+title: $:/nikorion/language/en-GB/Playground/
+
+Intro: Some introductory sentence.
+Heading: ! A heading
+```
+
+Appeler une clé depuis le wikitext avec `<<detect-language-lingo "Playground/Intro">>` — elle se résout en `$:/nikorion/language/<lang>/Playground/Intro` pour le `$:/language` courant, avec repli sur la valeur `en-GB`.
+
+Comme ces tiddlers issus de `.multids` ont un titre `$:/…`, l'adaptateur filesystem du wiki consommateur les aplatit en fichiers individuels sous `wiki/tiddlers/system/` dès que son serveur de dev tourne — sauf si `$:/config/SyncFilter` exclut aussi `-[prefix[$:/nikorion/language/]]`. Ajouter cette exclusion à côté de celle de `$:/language` ci-dessus.
+
+! Non inclus
+
+Pas d'onglet de réglages, pas de chaînes d'interface propres (seuls son readme, son historique et sa licence sont traduits), pas de wiki de dev dans ce dépôt (volontairement minimal — il n'a de sens que chargé depuis un autre wiki, pas lancé seul).
