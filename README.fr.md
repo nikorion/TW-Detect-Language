@@ -6,21 +6,12 @@ Sources du plugin [TiddlyWiki](https://tiddlywiki.com) `$:/plugins/nikorion/dete
 
 Ce README s'adresse à qui veut modifier le plugin. Comment le charger dans un wiki et traduire le contenu de ce wiki relève du readme du plugin lui-même (`src/detect-language/language/<lang>/readme.tid`).
 
-## Sommaire
-
-- [Prise en main](#prise-en-main)
-- [Organisation des sources](#organisation-des-sources)
-- [Fonctionnement](#fonctionnement)
-- [Licence](#licence)
-
 ## Prise en main
 
 Ce dépôt est volontairement minimal : pas de wiki de dev, pas de `package.json`, pas de build. Le plugin n'a de sens que chargé par un autre wiki ; il se développe donc à travers les wikis qui l'utilisent (n'importe quel dépôt `TW-*`, ou `../PKM`).
 
 1. Créer un lien symbolique de `src/detect-language` vers `$TIDDLYWIKI_PLUGIN_PATH/nikorion/detect-language`. C'est la seule chose qui permet à TiddlyWiki de résoudre l'entrée `"nikorion/detect-language"` d'un `tiddlywiki.info` : une clé `"pluginPath"` y est ignorée par le chargeur de plugins.
 2. Lancer `pnpm dev` dans un wiki qui liste le plugin. Son rechargement à chaud ne surveille que ses propres sources : après une modification de ce plugin, redémarrer le serveur de dev de ce wiki.
-
-[↑](#sommaire "Retour au sommaire")
 
 ## Organisation des sources
 
@@ -32,8 +23,6 @@ Ce dépôt est volontairement minimal : pas de wiki de dev, pas de `package.json
 | `readme.tid`, `history.tid`, `licence.tid` | sélecteurs de langue des onglets d'information du plugin |
 | `language/<lang>/` | le readme, l'historique et la licence dans chaque langue |
 
-[↑](#sommaire "Retour au sommaire")
-
 ## Fonctionnement
 
 - **La détection s'exécute avant le module `startup` du core.** `modules/startup.js` (`"before": ["startup"]`, `"after": ["load-modules"]`, navigateur seulement) choisit la meilleure correspondance de `navigator.language` parmi les plugins de langue installés dans le wiki : étiquette exacte, puis sous-étiquette principale (`fr-CA` → `fr-FR`), puis `en-GB`. Il ne doit pas devenir une action `$:/tags/StartupAction/Browser` : le core construit `$tw.languageSwitcher` en lisant `$:/language` une seule fois, puis vide la file d'événements après les actions de démarrage ; un changement ultérieur est donc perdu et l'interface du core reste en anglais. Le commentaire d'en-tête du module détaille cette course.
@@ -41,10 +30,6 @@ Ce dépôt est volontairement minimal : pas de wiki de dev, pas de `package.json
 - **Les chaînes de contenu appartiennent au wiki consommateur.** `detect-language-lingo "<Domain>/<Key>"` résout `$:/nikorion/language/<lang>/<Domain>/<Key>` pour la langue courante, avec repli sur `en-GB` ; les chaînes elles-mêmes vivent dans `wiki/tiddlers/language/<lang>/*.multids` de ce wiki, jamais ici.
 - **Conservé dans les démos publiées.** Aucun `publishFilter` n'exclut le plugin : une démo construite détecte elle aussi la langue de son visiteur.
 
-[↑](#sommaire "Retour au sommaire")
-
 ## Licence
 
 MIT — voir `LICENSE`.
-
-[↑](#sommaire "Retour au sommaire")
