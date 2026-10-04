@@ -20,8 +20,8 @@ Ce dépôt est volontairement minimal : pas de wiki de dev, pas de `package.json
 | `plugin.info` | métadonnées du plugin |
 | `modules/startup.js` | détection : pose `$:/language` au démarrage |
 | `lingo.tid` | la procédure `detect-language-lingo` et la fonction `detect-language-lingo-text` (tag `$:/tags/Global`) |
-| `readme.tid`, `history.tid`, `licence.tid` | sélecteurs de langue des onglets d'information du plugin |
-| `language/<lang>/` | le readme, l'historique et la licence dans chaque langue |
+| `readme.tid`, `history.tid`, `licence.tid` | onglets d'information du plugin : chacun affiche la version de `language/<lang>/` correspondant à la langue du wiki (repli `en-GB`) |
+| `language/<lang>/` | les textes du readme, de l'historique et de la licence, un dossier par langue |
 
 ## Fonctionnement
 

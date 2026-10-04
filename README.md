@@ -20,8 +20,8 @@ This repository is deliberately minimal: no dev wiki, no `package.json`, no buil
 | `plugin.info` | plugin metadata |
 | `modules/startup.js` | detection: sets `$:/language` at boot |
 | `lingo.tid` | the `detect-language-lingo` procedure and `detect-language-lingo-text` function (tag `$:/tags/Global`) |
-| `readme.tid`, `history.tid`, `licence.tid` | language selectors for the plugin info tabs |
-| `language/<lang>/` | the readme, history and licence in each language |
+| `readme.tid`, `history.tid`, `licence.tid` | plugin info tabs: each shows the version from `language/<lang>/` matching the wiki's language (fallback `en-GB`) |
+| `language/<lang>/` | the readme, history and licence texts, one folder per language |
 
 ## How it works
 
