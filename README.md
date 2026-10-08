@@ -11,7 +11,7 @@ This README is for whoever wants to change the plugin. How to load it in a wiki 
 This repository is deliberately minimal: no dev wiki, no `package.json`, no build. The plugin only makes sense loaded by another wiki, so it is developed through the wikis that use it (any `TW-*` repository, or `../PKM`).
 
 1. Symlink `src/detect-language` as `$TIDDLYWIKI_PLUGIN_PATH/nikorion/detect-language`. This is the only thing that makes TiddlyWiki resolve the `"nikorion/detect-language"` entry of a `tiddlywiki.info`: a `"pluginPath"` key there is not read by the plugin loader.
-2. Run `pnpm dev` in a wiki that lists the plugin. Its hot reload only watches its own sources: after editing this plugin, restart that wiki's dev server.
+2. Run `pnpm dev` in a wiki that lists the plugin. Its hot reload (`../tw-dev`) watches the sources of every plugin the wiki lists, this one included: an edit is pushed live, a change to `startup.js` or `plugin.info` restarts that wiki's server.
 
 ## Source layout
 
