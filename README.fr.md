@@ -1,4 +1,4 @@
-# TW-Detect-Language
+# tw-detect-language
 
 [English](README.md) · **Français**
 
