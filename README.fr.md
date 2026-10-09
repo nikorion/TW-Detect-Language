@@ -10,7 +10,7 @@ Ce README s'adresse à qui veut modifier le plugin. Comment le charger dans un w
 
 Ce dépôt est volontairement minimal : pas de wiki de dev, pas de `package.json`, pas de build. Le plugin n'a de sens que chargé par un autre wiki ; il se développe donc à travers les wikis qui l'utilisent (n'importe quel dépôt `TW-*`, ou `../PKM`).
 
-1. Créer un lien symbolique de `src/detect-language` vers `$TIDDLYWIKI_PLUGIN_PATH/nikorion/detect-language`. C'est la seule chose qui permet à TiddlyWiki de résoudre l'entrée `"nikorion/detect-language"` d'un `tiddlywiki.info` : une clé `"pluginPath"` y est ignorée par le chargeur de plugins.
+1. Un wiki de dev lancé par `pnpm dev` ([tw-dev](https://github.com/nikorion/tw-dev)) résout `nikorion/detect-language` tout seul. Pour tout autre wiki Node.js : créer un lien symbolique de `src/detect-language` vers `$TIDDLYWIKI_PLUGIN_PATH/nikorion/detect-language`. C'est la seule chose qui permet à TiddlyWiki de résoudre l'entrée `"nikorion/detect-language"` d'un `tiddlywiki.info` : une clé `"pluginPath"` y est ignorée par le chargeur de plugins.
 2. Lancer `pnpm dev` dans un wiki qui liste le plugin. Son rechargement à chaud (`../tw-dev`) surveille les sources de chaque plugin listé par le wiki, celui-ci compris : une modification est poussée à chaud, un changement de `startup.js` ou de `plugin.info` redémarre le serveur de ce wiki.
 
 ## Organisation des sources
